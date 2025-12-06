@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 1 - Ionic CDN</title>
+
+  <!-- Ionic core scripts + styles (з методички) -->
+  <script
+    type="module"
+    src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js">
+  </script>
+  <script
+    nomodule
+    src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js">
+  </script>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+
+  <style>
+    /* Трошки стилів, щоб усе виглядало акуратно на десктопі */
+    body {
+      margin: 0;
+      background: #f4f5f8;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    ion-content {
+      --background: #f4f5f8;
+    }
+
+    .page-content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Головний контейнер Ionic -->
+  <ion-app>
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>
+          Lab 1 – Ionic Components
+        </ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <div class="page-content">
+
+        <!-- 1. Кнопка Ionic з завдання -->
+        <div>
+          <div class="section-title">1. Базова кнопка Ionic</div>
+          <ion-button expand="block">
+            Click Me!
+          </ion-button>
+        </div>
+
+        <!-- 2. Компонент: ion-card -->
+        <div>
+          <div class="section-title">2. Компонент ion-card</div>
+          <ion-card>
+            <ion-card-header>
+              <ion-card-title>Welcome to Ionic</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              Це приклад картки <strong>ion-card</strong>, яка показує текстовий контент всередині.
+            </ion-card-content>
+          </ion-card>
+        </div>
+
+        <!-- 3. Компонент: ion-input -->
+        <div>
+          <div class="section-title">3. Компонент ion-input</div>
+          <ion-item>
+            <ion-label position="floating">Введіть ваше ім'я</ion-label>
+            <ion-input type="text"></ion-input>
+          </ion-item>
+        </div>
+
+        <!-- 4. Компонент: ion-toggle -->
+        <div>
+          <div class="section-title">4. Компонент ion-toggle</div>
+          <ion-item>
+            <ion-label>Увімкнути сповіщення</ion-label>
+            <ion-toggle checked></ion-toggle>
+          </ion-item>
+        </div>
+
+        <!-- 5. Компонент: ion-badge -->
+        <div>
+          <div class="section-title">5. Компонент ion-badge</div>
+          <p>
+            Непрочитані повідомлення:
+            <ion-badge color="danger">5</ion-badge>
+          </p>
+        </div>
+
+      </div>
+    </ion-content>
+  </ion-app>
+</body>
+</html>

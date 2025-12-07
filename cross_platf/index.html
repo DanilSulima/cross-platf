@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Лабораторна 2 — Планети Сонячної системи</title>
+  <title>Планети — Лаба 2 + Лаба 3</title>
 
   <!-- Ionic core -->
   <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
@@ -35,213 +35,94 @@
 <body>
 <ion-app>
 
-  <!-- РОУТЕР -->
-  <ion-router>
-    <!-- Головна сторінка зі списком планет -->
+  <!-- Роутер: хеш-режим, щоб дружити з Live Server / GitHub Pages -->
+  <ion-router use-hash="true">
     <ion-route url="/" component="page-home"></ion-route>
-    <!-- Детальна сторінка планети (динамічний маршрут) -->
     <ion-route url="/planet/:name" component="page-planet"></ion-route>
   </ion-router>
 
-  <!-- Контейнер для сторінок -->
   <ion-router-outlet></ion-router-outlet>
 
-  <script>
-    // ====================== ДАНІ ПРО ПЛАНЕТИ (з методички) ======================
-    const planets = [
-      {
-        name: 'Меркурій',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg',
-        description: 'Найменша планета Сонячної системи та найближча до Сонця.',
-        details: {
-          temperature: 'Вдень до 430°C, вночі до -180°C',
-          mass: '3.3011×10^23 кг',
-          distance: '57.9 млн км від Сонця',
-          discovery: 'Відома з давнини',
-          atmosphere: 'Відсутня',
-          satellites: 'Немає',
-          missions: ['Mariner 10', 'MESSENGER', 'BepiColombo']
-        }
-      },
-      {
-        name: 'Венера',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg',
-        description: 'Друга планета від Сонця, відома своєю густою атмосферою.',
-        details: {
-          temperature: 'Середня близько 464°C',
-          mass: '4.8675×10^24 кг',
-          distance: '108.2 млн км від Сонця',
-          discovery: 'Відома з давнини',
-          atmosphere: 'Вуглекислий газ, азот',
-          satellites: 'Немає',
-          missions: ['Venera', 'Magellan', 'Venus Express', 'Akatsuki']
-        }
-      },
-      {
-        name: 'Земля',
-        image: 'https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg',
-        description: 'Наша рідна планета, єдина відома з життям.',
-        details: {
-          temperature: 'Середня близько 15°C',
-          mass: '5.97237×10^24 кг',
-          distance: '149.6 млн км від Сонця',
-          discovery: 'Не застосовується',
-          atmosphere: 'Азот, кисень',
-          satellites: 'Місяць',
-          missions: ['Apollo', 'Міжнародна космічна станція']
-        }
-      }
-    ];
-    // (достатньо 3 планет, як написано в завданні)
+  <!-- FAB-кнопка: плаваюча, доступна на всіх сторінках -->
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button id="add-planet-modal">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
-    // ========================== ГОЛОВНА СТОРІНКА ==========================
-    class HomePage extends HTMLElement {
-      connectedCallback() {
-        this.innerHTML = `
-          <ion-header>
-            <ion-toolbar color="primary">
-              <ion-title>Планети Сонячної системи</ion-title>
-            </ion-toolbar>
-          </ion-header>
+  <!-- Модальне вікно додавання планети -->
+  <ion-modal trigger="add-planet-modal">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button id="close-add-planet-modal">Закрити</ion-button>
+        </ion-buttons>
+        <ion-title>Додати нову планету</ion-title>
+        <ion-buttons slot="end">
+          <ion-button id="confirm-add-planet">Додати</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
 
-          <ion-content>
-            <!-- Список через ion-grid / ion-row / ion-col -->
-            <ion-grid>
-              <ion-row>
-                ${planets.map(p => `
-                  <ion-col size="12" size-md="4">
-                    <!-- Кожна планета в ion-card -->
-                    <ion-card button href="/planet/${encodeURIComponent(p.name)}">
-                      <ion-img src="${p.image}" alt="${p.name}"></ion-img>
-                      <ion-card-header>
-                        <ion-card-title>${p.name}</ion-card-title>
-                      </ion-card-header>
-                      <ion-card-content>
-                        ${p.description}
-                      </ion-card-content>
-                    </ion-card>
-                  </ion-col>
-                `).join('')}
-              </ion-row>
-            </ion-grid>
-          </ion-content>
-        `;
-      }
-    }
-    customElements.define('page-home', HomePage);
+    <ion-content class="ion-padding">
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked">Назва планети *</ion-label>
+          <ion-input id="planetName" required></ion-input>
+        </ion-item>
 
-    // ======================= ДЕТАЛЬНА СТОРІНКА ПЛАНЕТИ =======================
-    class PlanetPage extends HTMLElement {
-      connectedCallback() {
-        // Витягуємо назву планети з URL (останній сегмент)
-        let url = location.pathname;
+        <ion-item>
+          <ion-label position="stacked">Посилання на зображення *</ion-label>
+          <ion-input id="planetImage" required></ion-input>
+        </ion-item>
 
-      // якщо використовується формат index.html#/planet/...
-        if (location.hash && location.hash.startsWith("#/")) {
-        url = location.hash.replace("#", ""); // прибираємо #
-        }
+        <ion-item>
+          <ion-label position="stacked">Опис *</ionlabel>
+          <ion-textarea id="planetDescription" required></ion-textarea>
+        </ion-item>
 
-        const nameFromUrl = decodeURIComponent(url.split("/").pop());
-            const planet = planets.find(p => p.name === nameFromUrl);
+        <ion-item>
+          <ion-label position="stacked">Температура</ion-label>
+          <ion-input id="planetTemperature"></ion-input>
+        </ion-item>
 
-        if (!planet) {
-          this.innerHTML = `
-            <ion-header>
-              <ion-toolbar color="primary">
-                <ion-title>Планета не знайдена</ion-title>
-              </ion-toolbar>
-            </ion-header>
-            <ion-content class="ion-padding">
-              <p>Такої планети немає в нашому списку.</p>
-            </ion-content>
-          `;
-          return;
-        }
+        <ion-item>
+          <ion-label position="stacked">Маса</ion-label>
+          <ion-input id="planetMass"></ion-input>
+        </ion-item>
 
-        const d = planet.details;
+        <ion-item>
+          <ion-label position="stacked">Відстань від Сонця</ion-label>
+          <ion-input id="planetDistance"></ion-input>
+        </ion-item>
 
-        this.innerHTML = `
-          <!-- Заголовок сторінки: ion-header + ion-toolbar з назвою планети -->
-          <ion-header>
-            <ion-toolbar color="primary">
-              <ion-buttons slot="start">
-                <ion-back-button defaultHref="/"></ion-back-button>
-              </ion-buttons>
-              <ion-title>${planet.name}</ion-title>
-            </ion-toolbar>
-          </ion-header>
+        <ion-item>
+          <ion-label position="stacked">Рік відкриття</ion-label>
+          <ion-input id="planetDiscovery"></ion-input>
+        </ion-item>
 
-          <ion-content class="ion-padding">
-            <!-- Навігаційні елементи: ion-breadcrumbs -->
-            <ion-breadcrumbs>
-              <ion-breadcrumb href="/">Головна</ion-breadcrumb>
-              <ion-breadcrumb>${planet.name}</ion-breadcrumb>
-            </ion-breadcrumbs>
+        <ion-item>
+          <ion-label position="stacked">Атмосфера</ion-label>
+          <ion-input id="planetAtmosphere"></ion-input>
+        </ion-item>
 
-            <!-- Основний контент: зображення + опис -->
-            <ion-img src="${planet.image}" alt="${planet.name}"></ion-img>
+        <ion-item>
+          <ion-label position="stacked">Супутники (через кому)</ion-label>
+          <ion-textarea id="planetSatellites"></ion-textarea>
+        </ion-item>
 
-            <h2>${planet.name}</h2>
-            <p>${planet.description}</p>
-
-            <!-- Характеристики через ion-chip -->
-            <h3>Характеристики</h3>
-            <div class="chips">
-              <ion-chip color="primary">
-                <ion-label>Температура: ${d.temperature}</ion-label>
-              </ion-chip>
-              <ion-chip color="secondary">
-                <ion-label>Маса: ${d.mass}</ion-label>
-              </ion-chip>
-              <ion-chip color="tertiary">
-                <ion-label>Відстань: ${d.distance}</ion-label>
-              </ion-chip>
-              <ion-chip color="success">
-                <ion-label>Рік відкриття: ${d.discovery}</ion-label>
-              </ion-chip>
-            </div>
-
-            <!-- Додаткова інформація через ion-accordion -->
-            <h3>Додаткова інформація</h3>
-            <ion-accordion-group>
-              <ion-accordion value="atm">
-                <ion-item slot="header">
-                  <ion-label>Хімічний склад атмосфери</ion-label>
-                </ion-item>
-                <div slot="content" class="ion-padding">
-                  ${d.atmosphere}
-                </div>
-              </ion-accordion>
-
-              <ion-accordion value="sat">
-                <ion-item slot="header">
-                  <ion-label>Список супутників</ion-label>
-                </ion-item>
-                <div slot="content" class="ion-padding">
-                  ${d.satellites}
-                </div>
-              </ion-accordion>
-
-              <ion-accordion value="missions">
-                <ion-item slot="header">
-                  <ion-label>Список експедицій та місій</ion-label>
-                </ion-item>
-                <div slot="content" class="ion-padding">
-                  <ul>
-                    ${d.missions.map(m => `<li>${m}</li>`).join('')}
-                  </ul>
-                </div>
-              </ion-accordion>
-            </ion-accordion-group>
-
-          </ion-content>
-        `;
-      }
-    }
-
-    customElements.define('page-planet', PlanetPage);
-  </script>
+        <ion-item>
+          <ion-label position="stacked">Місії (через кому)</ion-label>
+          <ion-textarea id="planetMissions"></ion-textarea>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-modal>
 
 </ion-app>
+
+<!-- Логіка додатку -->
+<script type="module" src="app.js"></script>
+<script type="module" src="addPlanetModal.js"></script>
 </body>
 </html>
